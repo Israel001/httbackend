@@ -1,0 +1,115 @@
+scalar Upload
+
+type Query {
+  sermons: [Sermon]!
+  sermon(id: ID!): Sermon
+
+  galleries: [Gallery]!
+  gallery(id: ID!): Gallery
+  
+  contacts: [Contact]!
+  contact(id: ID!): Contact
+  
+  subscriptions: [NewsletterSubscription]!
+  subscription(id: ID!): NewsletterSubscription
+}
+
+type Mutation {
+  createSermon(input: CreateSermonInput!): Sermon!
+  updateSermon(id: ID!, input: UpdateSermonInput!): Sermon!
+  deleteSermon(id: ID!): String!
+
+  createGallery(input: CreateGalleryInput!): Gallery!
+  updateGallery(id: ID!, input: UpdateGalleryInput!): Gallery!
+  deleteGallery(id: ID!): String!
+
+  createContact(input: CreateContactInput!): Contact!
+  updateContact(id: ID!, input: UpdateContactInput!): Contact!
+  deleteContact(id: ID!): String!
+
+  createSubscription(input: CreateSubscriptionInput!): NewsletterSubscription!
+  updateSubscription(id: ID!, input: UpdateSubscriptionInput!): NewsletterSubscription!
+  deleteSubscription(id: ID!): String!
+}
+
+type Sermon {
+  id: ID!
+  title: String!
+  video: String!
+  message: String!
+  date: String!
+  image: String!
+}
+
+input CreateSermonInput {
+  title: String!
+  video: String!
+  message: String!
+  date: String!
+  image: String!
+}
+
+input UpdateSermonInput {
+  title: String
+  video: String!
+  message: String
+  date: String
+  image: String!
+}
+
+type Gallery {
+  id: ID!
+  title: String!
+  image: String!
+  date: String!
+}
+
+input CreateGalleryInput {
+  title: String!
+  image: Upload!
+  date: String!
+}
+
+input UpdateGalleryInput {
+  title: String
+  image: String
+  date: String
+}
+
+type Contact {
+  id: ID!
+  firstname: String!
+  lastname: String!
+  email: String!
+  phone: String!
+  message: String!
+}
+
+input CreateContactInput {
+  firstname: String!
+  lastname: String!
+  email: String!
+  phone: String!
+  message: String!
+}
+
+input UpdateContactInput {
+  firstname: String
+  lastname: String
+  email: String
+  phone: String
+  message: String
+}
+
+type NewsletterSubscription {
+  id: ID!
+  email: String!
+}
+
+input CreateSubscriptionInput {
+  email: String!
+}
+
+input UpdateSubscriptionInput {
+  email: String
+}
