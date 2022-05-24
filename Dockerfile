@@ -22,4 +22,4 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
 COPY --from=builder /usr/src/app/httbackend /usr/src/app/httbackend
 
 # Run the web service on container startup.
-CMD ["/usr/src/app/httbackend"]
+CMD ["go run /usr/src/app/httbackend/cmd/"]
