@@ -65,14 +65,14 @@ type ComplexityRoot struct {
 		CreateGallery      func(childComplexity int, input model.CreateGalleryInput) int
 		CreateSermon       func(childComplexity int, input model.CreateSermonInput) int
 		CreateSubscription func(childComplexity int, input model.CreateSubscriptionInput) int
-		DeleteContact      func(childComplexity int, id string) int
-		DeleteGallery      func(childComplexity int, id string) int
-		DeleteSermon       func(childComplexity int, id string) int
-		DeleteSubscription func(childComplexity int, id string) int
-		UpdateContact      func(childComplexity int, id string, input model.UpdateContactInput) int
-		UpdateGallery      func(childComplexity int, id string, input model.UpdateGalleryInput) int
-		UpdateSermon       func(childComplexity int, id string, input model.UpdateSermonInput) int
-		UpdateSubscription func(childComplexity int, id string, input model.UpdateSubscriptionInput) int
+		DeleteContact      func(childComplexity int, id int) int
+		DeleteGallery      func(childComplexity int, id int) int
+		DeleteSermon       func(childComplexity int, id int) int
+		DeleteSubscription func(childComplexity int, id int) int
+		UpdateContact      func(childComplexity int, id int, input model.UpdateContactInput) int
+		UpdateGallery      func(childComplexity int, id int, input model.UpdateGalleryInput) int
+		UpdateSermon       func(childComplexity int, id int, input model.UpdateSermonInput) int
+		UpdateSubscription func(childComplexity int, id int, input model.UpdateSubscriptionInput) int
 	}
 
 	NewsletterSubscription struct {
@@ -81,13 +81,13 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Contact       func(childComplexity int, id string) int
+		Contact       func(childComplexity int, id int) int
 		Contacts      func(childComplexity int) int
 		Galleries     func(childComplexity int) int
-		Gallery       func(childComplexity int, id string) int
-		Sermon        func(childComplexity int, id string) int
+		Gallery       func(childComplexity int, id int) int
+		Sermon        func(childComplexity int, id int) int
 		Sermons       func(childComplexity int) int
-		Subscription  func(childComplexity int, id string) int
+		Subscription  func(childComplexity int, id int) int
 		Subscriptions func(childComplexity int) int
 	}
 
@@ -103,27 +103,27 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateSermon(ctx context.Context, input model.CreateSermonInput) (*model.Sermon, error)
-	UpdateSermon(ctx context.Context, id string, input model.UpdateSermonInput) (*model.Sermon, error)
-	DeleteSermon(ctx context.Context, id string) (string, error)
+	UpdateSermon(ctx context.Context, id int, input model.UpdateSermonInput) (*model.Sermon, error)
+	DeleteSermon(ctx context.Context, id int) (*model.Sermon, error)
 	CreateGallery(ctx context.Context, input model.CreateGalleryInput) (*model.Gallery, error)
-	UpdateGallery(ctx context.Context, id string, input model.UpdateGalleryInput) (*model.Gallery, error)
-	DeleteGallery(ctx context.Context, id string) (string, error)
+	UpdateGallery(ctx context.Context, id int, input model.UpdateGalleryInput) (*model.Gallery, error)
+	DeleteGallery(ctx context.Context, id int) (*model.Gallery, error)
 	CreateContact(ctx context.Context, input model.CreateContactInput) (*model.Contact, error)
-	UpdateContact(ctx context.Context, id string, input model.UpdateContactInput) (*model.Contact, error)
-	DeleteContact(ctx context.Context, id string) (string, error)
+	UpdateContact(ctx context.Context, id int, input model.UpdateContactInput) (*model.Contact, error)
+	DeleteContact(ctx context.Context, id int) (*model.Contact, error)
 	CreateSubscription(ctx context.Context, input model.CreateSubscriptionInput) (*model.NewsletterSubscription, error)
-	UpdateSubscription(ctx context.Context, id string, input model.UpdateSubscriptionInput) (*model.NewsletterSubscription, error)
-	DeleteSubscription(ctx context.Context, id string) (string, error)
+	UpdateSubscription(ctx context.Context, id int, input model.UpdateSubscriptionInput) (*model.NewsletterSubscription, error)
+	DeleteSubscription(ctx context.Context, id int) (*model.NewsletterSubscription, error)
 }
 type QueryResolver interface {
 	Sermons(ctx context.Context) ([]*model.Sermon, error)
-	Sermon(ctx context.Context, id string) (*model.Sermon, error)
+	Sermon(ctx context.Context, id int) (*model.Sermon, error)
 	Galleries(ctx context.Context) ([]*model.Gallery, error)
-	Gallery(ctx context.Context, id string) (*model.Gallery, error)
+	Gallery(ctx context.Context, id int) (*model.Gallery, error)
 	Contacts(ctx context.Context) ([]*model.Contact, error)
-	Contact(ctx context.Context, id string) (*model.Contact, error)
+	Contact(ctx context.Context, id int) (*model.Contact, error)
 	Subscriptions(ctx context.Context) ([]*model.NewsletterSubscription, error)
-	Subscription(ctx context.Context, id string) (*model.NewsletterSubscription, error)
+	Subscription(ctx context.Context, id int) (*model.NewsletterSubscription, error)
 }
 
 type executableSchema struct {
@@ -269,7 +269,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteContact(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteContact(childComplexity, args["id"].(int)), true
 
 	case "Mutation.deleteGallery":
 		if e.complexity.Mutation.DeleteGallery == nil {
@@ -281,7 +281,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteGallery(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteGallery(childComplexity, args["id"].(int)), true
 
 	case "Mutation.deleteSermon":
 		if e.complexity.Mutation.DeleteSermon == nil {
@@ -293,7 +293,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteSermon(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteSermon(childComplexity, args["id"].(int)), true
 
 	case "Mutation.deleteSubscription":
 		if e.complexity.Mutation.DeleteSubscription == nil {
@@ -305,7 +305,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteSubscription(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteSubscription(childComplexity, args["id"].(int)), true
 
 	case "Mutation.updateContact":
 		if e.complexity.Mutation.UpdateContact == nil {
@@ -317,7 +317,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateContact(childComplexity, args["id"].(string), args["input"].(model.UpdateContactInput)), true
+		return e.complexity.Mutation.UpdateContact(childComplexity, args["id"].(int), args["input"].(model.UpdateContactInput)), true
 
 	case "Mutation.updateGallery":
 		if e.complexity.Mutation.UpdateGallery == nil {
@@ -329,7 +329,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateGallery(childComplexity, args["id"].(string), args["input"].(model.UpdateGalleryInput)), true
+		return e.complexity.Mutation.UpdateGallery(childComplexity, args["id"].(int), args["input"].(model.UpdateGalleryInput)), true
 
 	case "Mutation.updateSermon":
 		if e.complexity.Mutation.UpdateSermon == nil {
@@ -341,7 +341,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateSermon(childComplexity, args["id"].(string), args["input"].(model.UpdateSermonInput)), true
+		return e.complexity.Mutation.UpdateSermon(childComplexity, args["id"].(int), args["input"].(model.UpdateSermonInput)), true
 
 	case "Mutation.updateSubscription":
 		if e.complexity.Mutation.UpdateSubscription == nil {
@@ -353,7 +353,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateSubscription(childComplexity, args["id"].(string), args["input"].(model.UpdateSubscriptionInput)), true
+		return e.complexity.Mutation.UpdateSubscription(childComplexity, args["id"].(int), args["input"].(model.UpdateSubscriptionInput)), true
 
 	case "NewsletterSubscription.email":
 		if e.complexity.NewsletterSubscription.Email == nil {
@@ -379,7 +379,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Contact(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Contact(childComplexity, args["id"].(int)), true
 
 	case "Query.contacts":
 		if e.complexity.Query.Contacts == nil {
@@ -405,7 +405,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Gallery(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Gallery(childComplexity, args["id"].(int)), true
 
 	case "Query.sermon":
 		if e.complexity.Query.Sermon == nil {
@@ -417,7 +417,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Sermon(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Sermon(childComplexity, args["id"].(int)), true
 
 	case "Query.sermons":
 		if e.complexity.Query.Sermons == nil {
@@ -436,7 +436,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Subscription(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Subscription(childComplexity, args["id"].(int)), true
 
 	case "Query.subscriptions":
 		if e.complexity.Query.Subscriptions == nil {
@@ -563,42 +563,40 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "graph/schema.graphqls", Input: `scalar Upload
-
-type Query {
+	{Name: "graph/schema.graphqls", Input: `type Query {
   sermons: [Sermon]!
-  sermon(id: ID!): Sermon
+  sermon(id: Int!): Sermon
 
   galleries: [Gallery]!
-  gallery(id: ID!): Gallery
+  gallery(id: Int!): Gallery
   
   contacts: [Contact]!
-  contact(id: ID!): Contact
+  contact(id: Int!): Contact
   
   subscriptions: [NewsletterSubscription]!
-  subscription(id: ID!): NewsletterSubscription
+  subscription(id: Int!): NewsletterSubscription
 }
 
 type Mutation {
   createSermon(input: CreateSermonInput!): Sermon!
-  updateSermon(id: ID!, input: UpdateSermonInput!): Sermon!
-  deleteSermon(id: ID!): String!
+  updateSermon(id: Int!, input: UpdateSermonInput!): Sermon!
+  deleteSermon(id: Int!): Sermon!
 
   createGallery(input: CreateGalleryInput!): Gallery!
-  updateGallery(id: ID!, input: UpdateGalleryInput!): Gallery!
-  deleteGallery(id: ID!): String!
+  updateGallery(id: Int!, input: UpdateGalleryInput!): Gallery!
+  deleteGallery(id: Int!): Gallery!
 
   createContact(input: CreateContactInput!): Contact!
-  updateContact(id: ID!, input: UpdateContactInput!): Contact!
-  deleteContact(id: ID!): String!
+  updateContact(id: Int!, input: UpdateContactInput!): Contact!
+  deleteContact(id: Int!): Contact!
 
   createSubscription(input: CreateSubscriptionInput!): NewsletterSubscription!
-  updateSubscription(id: ID!, input: UpdateSubscriptionInput!): NewsletterSubscription!
-  deleteSubscription(id: ID!): String!
+  updateSubscription(id: Int!, input: UpdateSubscriptionInput!): NewsletterSubscription!
+  deleteSubscription(id: Int!): NewsletterSubscription!
 }
 
 type Sermon {
-  id: ID!
+  id: Int!
   title: String!
   video: String!
   message: String!
@@ -616,14 +614,14 @@ input CreateSermonInput {
 
 input UpdateSermonInput {
   title: String
-  video: String!
+  video: String
   message: String
   date: String
-  image: String!
+  image: String
 }
 
 type Gallery {
-  id: ID!
+  id: Int!
   title: String!
   image: String!
   date: String!
@@ -631,7 +629,7 @@ type Gallery {
 
 input CreateGalleryInput {
   title: String!
-  image: Upload!
+  image: String!
   date: String!
 }
 
@@ -642,7 +640,7 @@ input UpdateGalleryInput {
 }
 
 type Contact {
-  id: ID!
+  id: Int!
   firstname: String!
   lastname: String!
   email: String!
@@ -667,7 +665,7 @@ input UpdateContactInput {
 }
 
 type NewsletterSubscription {
-  id: ID!
+  id: Int!
   email: String!
 }
 
@@ -748,10 +746,10 @@ func (ec *executionContext) field_Mutation_createSubscription_args(ctx context.C
 func (ec *executionContext) field_Mutation_deleteContact_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -763,10 +761,10 @@ func (ec *executionContext) field_Mutation_deleteContact_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteGallery_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -778,10 +776,10 @@ func (ec *executionContext) field_Mutation_deleteGallery_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteSermon_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -793,10 +791,10 @@ func (ec *executionContext) field_Mutation_deleteSermon_args(ctx context.Context
 func (ec *executionContext) field_Mutation_deleteSubscription_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -808,10 +806,10 @@ func (ec *executionContext) field_Mutation_deleteSubscription_args(ctx context.C
 func (ec *executionContext) field_Mutation_updateContact_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -832,10 +830,10 @@ func (ec *executionContext) field_Mutation_updateContact_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateGallery_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -856,10 +854,10 @@ func (ec *executionContext) field_Mutation_updateGallery_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateSermon_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -880,10 +878,10 @@ func (ec *executionContext) field_Mutation_updateSermon_args(ctx context.Context
 func (ec *executionContext) field_Mutation_updateSubscription_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -919,10 +917,10 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Query_contact_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -934,10 +932,10 @@ func (ec *executionContext) field_Query_contact_args(ctx context.Context, rawArg
 func (ec *executionContext) field_Query_gallery_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -949,10 +947,10 @@ func (ec *executionContext) field_Query_gallery_args(ctx context.Context, rawArg
 func (ec *executionContext) field_Query_sermon_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -964,10 +962,10 @@ func (ec *executionContext) field_Query_sermon_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Query_subscription_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1040,9 +1038,9 @@ func (ec *executionContext) _Contact_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Contact_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1052,7 +1050,7 @@ func (ec *executionContext) fieldContext_Contact_id(ctx context.Context, field g
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1304,9 +1302,9 @@ func (ec *executionContext) _Gallery_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Gallery_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1316,7 +1314,7 @@ func (ec *executionContext) fieldContext_Gallery_id(ctx context.Context, field g
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1537,7 +1535,7 @@ func (ec *executionContext) _Mutation_updateSermon(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateSermon(rctx, fc.Args["id"].(string), fc.Args["input"].(model.UpdateSermonInput))
+		return ec.resolvers.Mutation().UpdateSermon(rctx, fc.Args["id"].(int), fc.Args["input"].(model.UpdateSermonInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1606,7 +1604,7 @@ func (ec *executionContext) _Mutation_deleteSermon(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteSermon(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Mutation().DeleteSermon(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1618,9 +1616,9 @@ func (ec *executionContext) _Mutation_deleteSermon(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.Sermon)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNSermon2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteSermon(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1630,7 +1628,21 @@ func (ec *executionContext) fieldContext_Mutation_deleteSermon(ctx context.Conte
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Sermon_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Sermon_title(ctx, field)
+			case "video":
+				return ec.fieldContext_Sermon_video(ctx, field)
+			case "message":
+				return ec.fieldContext_Sermon_message(ctx, field)
+			case "date":
+				return ec.fieldContext_Sermon_date(ctx, field)
+			case "image":
+				return ec.fieldContext_Sermon_image(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Sermon", field.Name)
 		},
 	}
 	defer func() {
@@ -1726,7 +1738,7 @@ func (ec *executionContext) _Mutation_updateGallery(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateGallery(rctx, fc.Args["id"].(string), fc.Args["input"].(model.UpdateGalleryInput))
+		return ec.resolvers.Mutation().UpdateGallery(rctx, fc.Args["id"].(int), fc.Args["input"].(model.UpdateGalleryInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1791,7 +1803,7 @@ func (ec *executionContext) _Mutation_deleteGallery(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteGallery(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Mutation().DeleteGallery(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1803,9 +1815,9 @@ func (ec *executionContext) _Mutation_deleteGallery(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.Gallery)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNGallery2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐGallery(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteGallery(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1815,7 +1827,17 @@ func (ec *executionContext) fieldContext_Mutation_deleteGallery(ctx context.Cont
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Gallery_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Gallery_title(ctx, field)
+			case "image":
+				return ec.fieldContext_Gallery_image(ctx, field)
+			case "date":
+				return ec.fieldContext_Gallery_date(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Gallery", field.Name)
 		},
 	}
 	defer func() {
@@ -1915,7 +1937,7 @@ func (ec *executionContext) _Mutation_updateContact(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateContact(rctx, fc.Args["id"].(string), fc.Args["input"].(model.UpdateContactInput))
+		return ec.resolvers.Mutation().UpdateContact(rctx, fc.Args["id"].(int), fc.Args["input"].(model.UpdateContactInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1984,7 +2006,7 @@ func (ec *executionContext) _Mutation_deleteContact(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteContact(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Mutation().DeleteContact(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1996,9 +2018,9 @@ func (ec *executionContext) _Mutation_deleteContact(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.Contact)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNContact2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐContact(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteContact(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2008,7 +2030,21 @@ func (ec *executionContext) fieldContext_Mutation_deleteContact(ctx context.Cont
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Contact_id(ctx, field)
+			case "firstname":
+				return ec.fieldContext_Contact_firstname(ctx, field)
+			case "lastname":
+				return ec.fieldContext_Contact_lastname(ctx, field)
+			case "email":
+				return ec.fieldContext_Contact_email(ctx, field)
+			case "phone":
+				return ec.fieldContext_Contact_phone(ctx, field)
+			case "message":
+				return ec.fieldContext_Contact_message(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Contact", field.Name)
 		},
 	}
 	defer func() {
@@ -2100,7 +2136,7 @@ func (ec *executionContext) _Mutation_updateSubscription(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateSubscription(rctx, fc.Args["id"].(string), fc.Args["input"].(model.UpdateSubscriptionInput))
+		return ec.resolvers.Mutation().UpdateSubscription(rctx, fc.Args["id"].(int), fc.Args["input"].(model.UpdateSubscriptionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2161,7 +2197,7 @@ func (ec *executionContext) _Mutation_deleteSubscription(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteSubscription(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Mutation().DeleteSubscription(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2173,9 +2209,9 @@ func (ec *executionContext) _Mutation_deleteSubscription(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.NewsletterSubscription)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNNewsletterSubscription2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐNewsletterSubscription(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteSubscription(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2185,7 +2221,13 @@ func (ec *executionContext) fieldContext_Mutation_deleteSubscription(ctx context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_NewsletterSubscription_id(ctx, field)
+			case "email":
+				return ec.fieldContext_NewsletterSubscription_email(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type NewsletterSubscription", field.Name)
 		},
 	}
 	defer func() {
@@ -2228,9 +2270,9 @@ func (ec *executionContext) _NewsletterSubscription_id(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_NewsletterSubscription_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2240,7 +2282,7 @@ func (ec *executionContext) fieldContext_NewsletterSubscription_id(ctx context.C
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2362,7 +2404,7 @@ func (ec *executionContext) _Query_sermon(ctx context.Context, field graphql.Col
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Sermon(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().Sermon(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2482,7 +2524,7 @@ func (ec *executionContext) _Query_gallery(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Gallery(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().Gallery(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2602,7 +2644,7 @@ func (ec *executionContext) _Query_contact(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Contact(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().Contact(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2718,7 +2760,7 @@ func (ec *executionContext) _Query_subscription(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Subscription(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().Subscription(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2917,9 +2959,9 @@ func (ec *executionContext) _Sermon_id(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sermon_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2929,7 +2971,7 @@ func (ec *executionContext) fieldContext_Sermon_id(ctx context.Context, field gr
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -5004,7 +5046,7 @@ func (ec *executionContext) unmarshalInputCreateGalleryInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("image"))
-			it.Image, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			it.Image, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5215,7 +5257,7 @@ func (ec *executionContext) unmarshalInputUpdateSermonInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("video"))
-			it.Video, err = ec.unmarshalNString2string(ctx, v)
+			it.Video, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5239,7 +5281,7 @@ func (ec *executionContext) unmarshalInputUpdateSermonInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("image"))
-			it.Image, err = ec.unmarshalNString2string(ctx, v)
+			it.Image, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6299,13 +6341,13 @@ func (ec *executionContext) marshalNGallery2ᚖhttᚋhttbackendᚋgraphᚋmodel�
 	return ec._Gallery(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalID(v)
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalID(v)
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -6451,21 +6493,6 @@ func (ec *executionContext) unmarshalNUpdateSermonInput2httᚋhttbackendᚋgraph
 func (ec *executionContext) unmarshalNUpdateSubscriptionInput2httᚋhttbackendᚋgraphᚋmodelᚐUpdateSubscriptionInput(ctx context.Context, v interface{}) (model.UpdateSubscriptionInput, error) {
 	res, err := ec.unmarshalInputUpdateSubscriptionInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (graphql.Upload, error) {
-	res, err := graphql.UnmarshalUpload(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v graphql.Upload) graphql.Marshaler {
-	res := graphql.MarshalUpload(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {

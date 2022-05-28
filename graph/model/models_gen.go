@@ -2,12 +2,8 @@
 
 package model
 
-import (
-	"github.com/99designs/gqlgen/graphql"
-)
-
 type Contact struct {
-	ID        string `json:"id"`
+	ID        int    `json:"id"`
 	Firstname string `json:"firstname"`
 	Lastname  string `json:"lastname"`
 	Email     string `json:"email"`
@@ -24,9 +20,9 @@ type CreateContactInput struct {
 }
 
 type CreateGalleryInput struct {
-	Title string         `json:"title"`
-	Image graphql.Upload `json:"image"`
-	Date  string         `json:"date"`
+	Title string `json:"title"`
+	Image string `json:"image"`
+	Date  string `json:"date"`
 }
 
 type CreateSermonInput struct {
@@ -42,19 +38,19 @@ type CreateSubscriptionInput struct {
 }
 
 type Gallery struct {
-	ID    string `json:"id"`
+	ID    int    `json:"id"`
 	Title string `json:"title"`
 	Image string `json:"image"`
 	Date  string `json:"date"`
 }
 
 type NewsletterSubscription struct {
-	ID    string `json:"id"`
+	ID    int    `json:"id"`
 	Email string `json:"email"`
 }
 
 type Sermon struct {
-	ID      string `json:"id"`
+	ID      int    `json:"id"`
 	Title   string `json:"title"`
 	Video   string `json:"video"`
 	Message string `json:"message"`
@@ -78,10 +74,10 @@ type UpdateGalleryInput struct {
 
 type UpdateSermonInput struct {
 	Title   *string `json:"title"`
-	Video   string  `json:"video"`
+	Video   *string `json:"video"`
 	Message *string `json:"message"`
 	Date    *string `json:"date"`
-	Image   string  `json:"image"`
+	Image   *string `json:"image"`
 }
 
 type UpdateSubscriptionInput struct {

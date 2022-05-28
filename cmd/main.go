@@ -5,6 +5,8 @@ import (
 	"htt/httbackend"
 	"htt/httbackend/graph"
 	"htt/httbackend/graph/generated"
+	"htt/httbackend/models"
+	"htt/httbackend/repositories"
 	"log"
 	"net/http"
 	"os"
@@ -37,7 +39,12 @@ func main() {
 
 	app.InitDB()
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
+		SermonRepo:       repositories.New(app.DB, &models.Sermon{}),
+		GalleryRepo:      repositories.New(app.DB, &models.Gallery{}),
+		ContactRepo:      repositories.New(app.DB, &models.Contact{}),
+		SubscriptionRepo: repositories.New(app.DB, &models.NewsletterSubscription{}),
+	}}))
 
 	mainRouteBuilder := &RouteBuilder{router: mux.NewRouter()}
 	mainRouteBuilder.MakeRoute("/", func(apiRouteBuilder RouteBuilder, router *mux.Router) {

@@ -1,39 +1,37 @@
-scalar Upload
-
 type Query {
   sermons: [Sermon]!
-  sermon(id: ID!): Sermon
+  sermon(id: Int!): Sermon
 
   galleries: [Gallery]!
-  gallery(id: ID!): Gallery
+  gallery(id: Int!): Gallery
   
   contacts: [Contact]!
-  contact(id: ID!): Contact
+  contact(id: Int!): Contact
   
   subscriptions: [NewsletterSubscription]!
-  subscription(id: ID!): NewsletterSubscription
+  subscription(id: Int!): NewsletterSubscription
 }
 
 type Mutation {
   createSermon(input: CreateSermonInput!): Sermon!
-  updateSermon(id: ID!, input: UpdateSermonInput!): Sermon!
-  deleteSermon(id: ID!): String!
+  updateSermon(id: Int!, input: UpdateSermonInput!): Sermon!
+  deleteSermon(id: Int!): Sermon!
 
   createGallery(input: CreateGalleryInput!): Gallery!
-  updateGallery(id: ID!, input: UpdateGalleryInput!): Gallery!
-  deleteGallery(id: ID!): String!
+  updateGallery(id: Int!, input: UpdateGalleryInput!): Gallery!
+  deleteGallery(id: Int!): Gallery!
 
   createContact(input: CreateContactInput!): Contact!
-  updateContact(id: ID!, input: UpdateContactInput!): Contact!
-  deleteContact(id: ID!): String!
+  updateContact(id: Int!, input: UpdateContactInput!): Contact!
+  deleteContact(id: Int!): Contact!
 
   createSubscription(input: CreateSubscriptionInput!): NewsletterSubscription!
-  updateSubscription(id: ID!, input: UpdateSubscriptionInput!): NewsletterSubscription!
-  deleteSubscription(id: ID!): String!
+  updateSubscription(id: Int!, input: UpdateSubscriptionInput!): NewsletterSubscription!
+  deleteSubscription(id: Int!): NewsletterSubscription!
 }
 
 type Sermon {
-  id: ID!
+  id: Int!
   title: String!
   video: String!
   message: String!
@@ -51,14 +49,14 @@ input CreateSermonInput {
 
 input UpdateSermonInput {
   title: String
-  video: String!
+  video: String
   message: String
   date: String
-  image: String!
+  image: String
 }
 
 type Gallery {
-  id: ID!
+  id: Int!
   title: String!
   image: String!
   date: String!
@@ -66,7 +64,7 @@ type Gallery {
 
 input CreateGalleryInput {
   title: String!
-  image: Upload!
+  image: String!
   date: String!
 }
 
@@ -77,7 +75,7 @@ input UpdateGalleryInput {
 }
 
 type Contact {
-  id: ID!
+  id: Int!
   firstname: String!
   lastname: String!
   email: String!
@@ -102,7 +100,7 @@ input UpdateContactInput {
 }
 
 type NewsletterSubscription {
-  id: ID!
+  id: Int!
   email: String!
 }
 
