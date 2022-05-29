@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"htt/httbackend"
+	httbackend "htt/httbackend/init"
 	"htt/httbackend/graph"
 	"htt/httbackend/graph/generated"
 	"htt/httbackend/models"
