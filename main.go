@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	httbackend "htt/httbackend/init"
 	"htt/httbackend/graph"
 	"htt/httbackend/graph/generated"
+	httbackend "htt/httbackend/init"
 	"htt/httbackend/models"
 	"htt/httbackend/repositories"
 	"log"
@@ -55,5 +55,9 @@ func main() {
 	host, _ := os.Hostname()
 	fmt.Printf("Starting the server at http://%s:%v\n", host, app.Config.AppPort)
 
-	log.Fatal(http.ListenAndServe(":"+app.Config.AppPort, mainRouteBuilder.router))
+	if app.Config.AppEnv == "development" {
+		log.Fatal(http.ListenAndServe(":"+app.Config.AppPort, mainRouteBuilder.router))
+	} else {
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), mainRouteBuilder.router))
+	}
 }
