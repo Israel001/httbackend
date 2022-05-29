@@ -1,14 +1,14 @@
 type Query {
-  sermons: [Sermon]!
+  sermons: [Sermon]
   sermon(id: Int!): Sermon
 
-  galleries: [Gallery]!
+  galleries: [Gallery]
   gallery(id: Int!): Gallery
   
-  contacts: [Contact]!
+  contacts: [Contact]
   contact(id: Int!): Contact
   
-  subscriptions: [NewsletterSubscription]!
+  subscriptions: [NewsletterSubscription]
   subscription(id: Int!): NewsletterSubscription
 }
 

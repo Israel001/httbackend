@@ -260,11 +260,29 @@ func (r *mutationResolver) DeleteSubscription(ctx context.Context, id int) (*mod
 }
 
 func (r *queryResolver) Sermons(ctx context.Context) ([]*model.Sermon, error) {
-	panic(fmt.Errorf("not implemented"))
+	response := []model.Sermon{}
+	sermonList := []*model.Sermon{}
+
+	r.SermonRepo.DB.Find(&response)
+
+	for _, sermon := range response {
+		sermonList = append(sermonList, &sermon)
+	}
+
+	return sermonList, nil
 }
 
 func (r *queryResolver) Sermon(ctx context.Context, id int) (*model.Sermon, error) {
-	panic(fmt.Errorf("not implemented"))
+	existingSermon := models.Sermon{}
+	r.SermonRepo.DB.First(&existingSermon, id)
+	if !existingSermon.ID.Valid {
+		return nil, fmt.Errorf("a sermon with the ID: '%v' not found", id)
+	}
+	response := model.Sermon{}
+	res, _ := json.Marshal(existingSermon)
+	json.Unmarshal(res, &response)
+	response.ID = int(existingSermon.ID.Int64)
+	return &response, nil
 }
 
 func (r *queryResolver) Galleries(ctx context.Context) ([]*model.Gallery, error) {
@@ -272,7 +290,16 @@ func (r *queryResolver) Galleries(ctx context.Context) ([]*model.Gallery, error)
 }
 
 func (r *queryResolver) Gallery(ctx context.Context, id int) (*model.Gallery, error) {
-	panic(fmt.Errorf("not implemented"))
+	existingGallery := models.Gallery{}
+	r.GalleryRepo.DB.First(&existingGallery, id)
+	if !existingGallery.ID.Valid {
+		return nil, fmt.Errorf("a gallery with the ID: '%v' not found", id)
+	}
+	response := model.Gallery{}
+	res, _ := json.Marshal(existingGallery)
+	json.Unmarshal(res, &response)
+	response.ID = int(existingGallery.ID.Int64)
+	return &response, nil
 }
 
 func (r *queryResolver) Contacts(ctx context.Context) ([]*model.Contact, error) {
@@ -280,7 +307,16 @@ func (r *queryResolver) Contacts(ctx context.Context) ([]*model.Contact, error) 
 }
 
 func (r *queryResolver) Contact(ctx context.Context, id int) (*model.Contact, error) {
-	panic(fmt.Errorf("not implemented"))
+	existingContact := models.Contact{}
+	r.ContactRepo.DB.First(&existingContact, id)
+	if !existingContact.ID.Valid {
+		return nil, fmt.Errorf("a contact with the ID: '%v' not found", id)
+	}
+	response := model.Contact{}
+	res, _ := json.Marshal(existingContact)
+	json.Unmarshal(res, &response)
+	response.ID = int(existingContact.ID.Int64)
+	return &response, nil
 }
 
 func (r *queryResolver) Subscriptions(ctx context.Context) ([]*model.NewsletterSubscription, error) {
@@ -288,7 +324,16 @@ func (r *queryResolver) Subscriptions(ctx context.Context) ([]*model.NewsletterS
 }
 
 func (r *queryResolver) Subscription(ctx context.Context, id int) (*model.NewsletterSubscription, error) {
-	panic(fmt.Errorf("not implemented"))
+	existingSubscription := models.NewsletterSubscription{}
+	r.SubscriptionRepo.DB.First(&existingSubscription, id)
+	if !existingSubscription.ID.Valid {
+		return nil, fmt.Errorf("a subscription with the ID: '%v' not found", id)
+	}
+	response := model.NewsletterSubscription{}
+	res, _ := json.Marshal(existingSubscription)
+	json.Unmarshal(res, &response)
+	response.ID = int(existingSubscription.ID.Int64)
+	return &response, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

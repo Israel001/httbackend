@@ -10,7 +10,6 @@ import (
 	"htt/httbackend/graph/model"
 	"strconv"
 	"sync"
-	"sync/atomic"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -564,16 +563,16 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "graph/schema.graphqls", Input: `type Query {
-  sermons: [Sermon]!
+  sermons: [Sermon]
   sermon(id: Int!): Sermon
 
-  galleries: [Gallery]!
+  galleries: [Gallery]
   gallery(id: Int!): Gallery
   
-  contacts: [Contact]!
+  contacts: [Contact]
   contact(id: Int!): Contact
   
-  subscriptions: [NewsletterSubscription]!
+  subscriptions: [NewsletterSubscription]
   subscription(id: Int!): NewsletterSubscription
 }
 
@@ -2353,14 +2352,11 @@ func (ec *executionContext) _Query_sermons(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.([]*model.Sermon)
 	fc.Result = res
-	return ec.marshalNSermon2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx, field.Selections, res)
+	return ec.marshalOSermon2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_sermons(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2477,14 +2473,11 @@ func (ec *executionContext) _Query_galleries(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.([]*model.Gallery)
 	fc.Result = res
-	return ec.marshalNGallery2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐGallery(ctx, field.Selections, res)
+	return ec.marshalOGallery2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐGallery(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_galleries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2593,14 +2586,11 @@ func (ec *executionContext) _Query_contacts(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.([]*model.Contact)
 	fc.Result = res
-	return ec.marshalNContact2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐContact(ctx, field.Selections, res)
+	return ec.marshalOContact2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐContact(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_contacts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2717,14 +2707,11 @@ func (ec *executionContext) _Query_subscriptions(ctx context.Context, field grap
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.([]*model.NewsletterSubscription)
 	fc.Result = res
-	return ec.marshalNNewsletterSubscription2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐNewsletterSubscription(ctx, field.Selections, res)
+	return ec.marshalONewsletterSubscription2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐNewsletterSubscription(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_subscriptions(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5636,9 +5623,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_sermons(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
 				return res
 			}
 
@@ -5679,9 +5663,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_galleries(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
 				return res
 			}
 
@@ -5722,9 +5703,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_contacts(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
 				return res
 			}
 
@@ -5765,9 +5743,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_subscriptions(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
 				return res
 			}
 
@@ -6221,44 +6196,6 @@ func (ec *executionContext) marshalNContact2httᚋhttbackendᚋgraphᚋmodelᚐC
 	return ec._Contact(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNContact2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐContact(ctx context.Context, sel ast.SelectionSet, v []*model.Contact) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOContact2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐContact(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
 func (ec *executionContext) marshalNContact2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐContact(ctx context.Context, sel ast.SelectionSet, v *model.Contact) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -6293,44 +6230,6 @@ func (ec *executionContext) marshalNGallery2httᚋhttbackendᚋgraphᚋmodelᚐG
 	return ec._Gallery(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNGallery2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐGallery(ctx context.Context, sel ast.SelectionSet, v []*model.Gallery) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOGallery2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐGallery(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
 func (ec *executionContext) marshalNGallery2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐGallery(ctx context.Context, sel ast.SelectionSet, v *model.Gallery) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -6360,44 +6259,6 @@ func (ec *executionContext) marshalNNewsletterSubscription2httᚋhttbackendᚋgr
 	return ec._NewsletterSubscription(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNNewsletterSubscription2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐNewsletterSubscription(ctx context.Context, sel ast.SelectionSet, v []*model.NewsletterSubscription) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalONewsletterSubscription2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐNewsletterSubscription(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
 func (ec *executionContext) marshalNNewsletterSubscription2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐNewsletterSubscription(ctx context.Context, sel ast.SelectionSet, v *model.NewsletterSubscription) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -6410,44 +6271,6 @@ func (ec *executionContext) marshalNNewsletterSubscription2ᚖhttᚋhttbackend�
 
 func (ec *executionContext) marshalNSermon2httᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx context.Context, sel ast.SelectionSet, v model.Sermon) graphql.Marshaler {
 	return ec._Sermon(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNSermon2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx context.Context, sel ast.SelectionSet, v []*model.Sermon) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOSermon2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
 }
 
 func (ec *executionContext) marshalNSermon2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx context.Context, sel ast.SelectionSet, v *model.Sermon) graphql.Marshaler {
@@ -6774,11 +6597,93 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) marshalOContact2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐContact(ctx context.Context, sel ast.SelectionSet, v []*model.Contact) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOContact2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐContact(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalOContact2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐContact(ctx context.Context, sel ast.SelectionSet, v *model.Contact) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Contact(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOGallery2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐGallery(ctx context.Context, sel ast.SelectionSet, v []*model.Gallery) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOGallery2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐGallery(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) marshalOGallery2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐGallery(ctx context.Context, sel ast.SelectionSet, v *model.Gallery) graphql.Marshaler {
@@ -6788,11 +6693,93 @@ func (ec *executionContext) marshalOGallery2ᚖhttᚋhttbackendᚋgraphᚋmodel�
 	return ec._Gallery(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalONewsletterSubscription2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐNewsletterSubscription(ctx context.Context, sel ast.SelectionSet, v []*model.NewsletterSubscription) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalONewsletterSubscription2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐNewsletterSubscription(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalONewsletterSubscription2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐNewsletterSubscription(ctx context.Context, sel ast.SelectionSet, v *model.NewsletterSubscription) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._NewsletterSubscription(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOSermon2ᚕᚖhttᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx context.Context, sel ast.SelectionSet, v []*model.Sermon) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOSermon2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) marshalOSermon2ᚖhttᚋhttbackendᚋgraphᚋmodelᚐSermon(ctx context.Context, sel ast.SelectionSet, v *model.Sermon) graphql.Marshaler {
