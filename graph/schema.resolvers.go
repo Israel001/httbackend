@@ -265,7 +265,8 @@ func (r *queryResolver) Sermons(ctx context.Context) ([]*model.Sermon, error) {
 
 	r.SermonRepo.DB.Find(&response)
 
-	for _, sermon := range response {
+	for _, s := range response {
+		sermon := s
 		sermonList = append(sermonList, &sermon)
 	}
 
@@ -286,7 +287,17 @@ func (r *queryResolver) Sermon(ctx context.Context, id int) (*model.Sermon, erro
 }
 
 func (r *queryResolver) Galleries(ctx context.Context) ([]*model.Gallery, error) {
-	panic(fmt.Errorf("not implemented"))
+	response := []model.Gallery{}
+	galleryList := []*model.Gallery{}
+
+	r.GalleryRepo.DB.Find(&response)
+
+	for _, g := range response {
+		gallery := g
+		galleryList = append(galleryList, &gallery)
+	}
+
+	return galleryList, nil
 }
 
 func (r *queryResolver) Gallery(ctx context.Context, id int) (*model.Gallery, error) {
@@ -303,7 +314,17 @@ func (r *queryResolver) Gallery(ctx context.Context, id int) (*model.Gallery, er
 }
 
 func (r *queryResolver) Contacts(ctx context.Context) ([]*model.Contact, error) {
-	panic(fmt.Errorf("not implemented"))
+	response := []model.Contact{}
+	contactList := []*model.Contact{}
+
+	r.ContactRepo.DB.Find(&response)
+
+	for _, c := range response {
+		contact := c
+		contactList = append(contactList, &contact)
+	}
+
+	return contactList, nil
 }
 
 func (r *queryResolver) Contact(ctx context.Context, id int) (*model.Contact, error) {
@@ -320,7 +341,17 @@ func (r *queryResolver) Contact(ctx context.Context, id int) (*model.Contact, er
 }
 
 func (r *queryResolver) Subscriptions(ctx context.Context) ([]*model.NewsletterSubscription, error) {
-	panic(fmt.Errorf("not implemented"))
+	response := []model.NewsletterSubscription{}
+	subscriptionList := []*model.NewsletterSubscription{}
+
+	r.SubscriptionRepo.DB.Find(&response)
+
+	for _, s := range response {
+		sermon := s
+		subscriptionList = append(subscriptionList, &sermon)
+	}
+
+	return subscriptionList, nil
 }
 
 func (r *queryResolver) Subscription(ctx context.Context, id int) (*model.NewsletterSubscription, error) {
