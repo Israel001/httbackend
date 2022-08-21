@@ -13,6 +13,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -52,12 +53,17 @@ func main() {
 		router.Handle("/graphql", srv).Methods("GET", "POST")
 	})
 
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
+	originsOk := handlers.AllowedOrigins([]string{"http://localhost:3000"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
 	host, _ := os.Hostname()
 	fmt.Printf("Starting the server at http://%s:%v\n", host, app.Config.AppPort)
 
+	handler := handlers.CORS(originsOk, headersOk, methodsOk)(mainRouteBuilder.router)
 	if app.Config.AppEnv == "development" {
-		log.Fatal(http.ListenAndServe(":"+app.Config.AppPort, mainRouteBuilder.router))
+		log.Fatal(http.ListenAndServe(":"+app.Config.AppPort, handler))
 	} else {
-		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), mainRouteBuilder.router))
+		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), handler))
 	}
 }
