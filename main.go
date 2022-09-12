@@ -41,21 +41,21 @@ func main() {
 	}}))
 	srv.AddTransport(&transport.Websocket{
 		Upgrader: websocket.Upgrader{
-            CheckOrigin: func(r *http.Request) bool {
-                return true
-            },
-            ReadBufferSize:  1024,
-            WriteBufferSize: 1024,
-        },
+			CheckOrigin: func(r *http.Request) bool {
+				return true
+			},
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+		},
 	})
 
 	router := chi.NewRouter()
 
 	router.Use(cors.New(cors.Options{
-		AllowedOrigins: strings.Split(app.Config.AllowedOrigins, ","),
+		AllowedOrigins:   strings.Split(app.Config.AllowedOrigins, ","),
 		AllowCredentials: true,
-		AllowedHeaders: []string{"*"},
-		Debug: true,
+		AllowedHeaders:   []string{"*"},
+		Debug:            true,
 	}).Handler)
 
 	router.Handle("/", playground.Handler("GraphQL Playground", "/graphql"))
@@ -64,5 +64,9 @@ func main() {
 	host, _ := os.Hostname()
 	fmt.Printf("Starting the server at http://%s:%v\n", host, app.Config.AppPort)
 
-	log.Fatal(http.ListenAndServe(":"+app.Config.AppPort, router))
+	if app.Config.AppEnv == "development" {
+		log.Fatal(http.ListenAndServe(":"+app.Config.AppPort, router))
+	} else {
+		log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))
+	}
 }
