@@ -10,23 +10,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
+	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 )
-
-type RouteBuilder struct {
-	router *mux.Router
-}
-
-func (routeBuilder *RouteBuilder) MakeRoute(path string, f func(RouteBuilder, *mux.Router)) *RouteBuilder {
-	apiRouter := routeBuilder.router.PathPrefix(path).Subrouter()
-	f(RouteBuilder{router: apiRouter}, apiRouter)
-	return routeBuilder
-}
 
 func main() {
 	err := godotenv.Load(".env")
@@ -46,24 +39,30 @@ func main() {
 		ContactRepo:      repositories.New(app.DB, &models.Contact{}),
 		SubscriptionRepo: repositories.New(app.DB, &models.NewsletterSubscription{}),
 	}}))
-
-	mainRouteBuilder := &RouteBuilder{router: mux.NewRouter()}
-	mainRouteBuilder.MakeRoute("/", func(apiRouteBuilder RouteBuilder, router *mux.Router) {
-		router.Handle("/", playground.Handler("GraphQL Playground", "/graphql"))
-		router.Handle("/graphql", srv).Methods("GET", "POST")
+	srv.AddTransport(&transport.Websocket{
+		Upgrader: websocket.Upgrader{
+            CheckOrigin: func(r *http.Request) bool {
+                return true
+            },
+            ReadBufferSize:  1024,
+            WriteBufferSize: 1024,
+        },
 	})
 
-	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
-	originsOk := handlers.AllowedOrigins([]string{"http://localhost:3000"})
-	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+	router := chi.NewRouter()
+
+	router.Use(cors.New(cors.Options{
+		AllowedOrigins: strings.Split(app.Config.AllowedOrigins, ","),
+		AllowCredentials: true,
+		AllowedHeaders: []string{"*"},
+		Debug: true,
+	}).Handler)
+
+	router.Handle("/", playground.Handler("GraphQL Playground", "/graphql"))
+	router.Handle("/graphql", srv)
 
 	host, _ := os.Hostname()
 	fmt.Printf("Starting the server at http://%s:%v\n", host, app.Config.AppPort)
 
-	handler := handlers.CORS(originsOk, headersOk, methodsOk)(mainRouteBuilder.router)
-	if app.Config.AppEnv == "development" {
-		log.Fatal(http.ListenAndServe(":"+app.Config.AppPort, handler))
-	} else {
-		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), handler))
-	}
+	log.Fatal(http.ListenAndServe(":"+app.Config.AppPort, router))
 }
