@@ -26,11 +26,12 @@ type CreateGalleryInput struct {
 }
 
 type CreateSermonInput struct {
-	Title   string `json:"title"`
-	Video   string `json:"video"`
-	Message string `json:"message"`
-	Date    string `json:"date"`
-	Image   string `json:"image"`
+	Title    string `json:"title"`
+	Video    string `json:"video"`
+	Message  string `json:"message"`
+	Date     string `json:"date"`
+	Image    string `json:"image"`
+	Preacher string `json:"preacher"`
 }
 
 type CreateSubscriptionInput struct {
@@ -50,12 +51,13 @@ type NewsletterSubscription struct {
 }
 
 type Sermon struct {
-	ID      int    `json:"id"`
-	Title   string `json:"title"`
-	Video   string `json:"video"`
-	Message string `json:"message"`
-	Date    string `json:"date"`
-	Image   string `json:"image"`
+	ID       int    `json:"id"`
+	Title    string `json:"title"`
+	Video    string `json:"video"`
+	Message  string `json:"message"`
+	Date     string `json:"date"`
+	Image    string `json:"image"`
+	Preacher string `json:"preacher"`
 }
 
 type UpdateContactInput struct {
@@ -73,11 +75,12 @@ type UpdateGalleryInput struct {
 }
 
 type UpdateSermonInput struct {
-	Title   *string `json:"title"`
-	Video   *string `json:"video"`
-	Message *string `json:"message"`
-	Date    *string `json:"date"`
-	Image   *string `json:"image"`
+	Title    *string `json:"title"`
+	Video    *string `json:"video"`
+	Message  *string `json:"message"`
+	Date     *string `json:"date"`
+	Image    *string `json:"image"`
+	Preacher *string `json:"preacher"`
 }
 
 type UpdateSubscriptionInput struct {

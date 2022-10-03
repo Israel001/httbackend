@@ -37,6 +37,7 @@ type Sermon {
   message: String!
   date: String!
   image: String!
+  preacher: String!
 }
 
 input CreateSermonInput {
@@ -45,6 +46,7 @@ input CreateSermonInput {
   message: String!
   date: String!
   image: String!
+  preacher: String!
 }
 
 input UpdateSermonInput {
@@ -53,6 +55,7 @@ input UpdateSermonInput {
   message: String
   date: String
   image: String
+  preacher: String
 }
 
 type Gallery {
